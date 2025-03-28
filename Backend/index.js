@@ -1,29 +1,26 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { initGemini } from './controllers/resume.controller.js';
 import connectDB from './db/db.js';
+import { initGemini } from './controllers/resume.controller.js';
 import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
+import skillSwapRouter from './route/skillswap.route.js';
 
-// Load environment variables first
+// Load environment variables
 dotenv.config({ path: './.env' });
 
-// Environment validation
+// Validate required environment variables
 const requiredEnvVars = ['GEMINI_API_KEY', 'MONGO_URI'];
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingVars.length > 0) {
-  console.error('Missing required environment variables:', missingVars);
+  console.error('❌ Missing required environment variables:', missingVars);
   process.exit(1);
 }
 
-console.log('Environment configuration:', {
-  geminiKey: '✔️ Loaded',
-  port: process.env.PORT || '3000 (default)',
-  mongo: '✔️ Loaded'
-});
+console.log('✅ Environment variables loaded');
 
-// Initialize application
+// Initialize Express
 const app = express();
 
 // Middleware
@@ -32,53 +29,51 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ 
+  res.status(200).json({
     status: 'healthy',
     services: {
-      database: 'connected', // This would be dynamic in production
+      database: 'connected', // This should be dynamically checked in production
       gemini: 'initialized'
     }
   });
 });
 
-// Initialize services
+// Routes
+app.use('/user', userRouter);
+app.use('/resume', resumeRoutes);
+app.use('/skillswap', skillSwapRouter);
+
+// Basic Route
+app.get('/', (req, res) => {
+  res.send(`
+    <h1>Resume Generator API</h1>
+    <p>Endpoints available:</p>
+    <ul>
+      <li>POST /resume/generate-resume-section</li>
+      <li>POST /resume/evaluate-resume</li>
+      <li>User routes at /user</li>
+    </ul>
+  `);
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('❌ Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
+});
+
+// Start Server after initializing services
 (async () => {
   try {
-    // Database connection
-    await connectDB();
+    await connectDB(); // Connect to MongoDB
     console.log('✅ Database connected');
 
-    // AI service initialization
-    initGemini();
+    initGemini(); // Initialize Gemini AI
     console.log('✅ Gemini AI initialized');
 
-    // Routes
-    app.use('/user', userRouter);
-    app.use('/resume', resumeRoutes);
-
-    // Basic route
-    app.get('/', (req, res) => {
-      res.send(`
-        <h1>Resume Generator API</h1>
-        <p>Endpoints available:</p>
-        <ul>
-          <li>POST /resume/generate-resume-section</li>
-          <li>POST /resume/evaluate-resume</li>
-          <li>User routes at /user</li>
-        </ul>
-      `);
-    });
-
-    // Error handling middleware
-    app.use((err, req, res, next) => {
-      console.error('Server error:', err);
-      res.status(500).json({ 
-        error: 'Internal server error',
-        message: err.message 
-      });
-    });
-
-    // Start server
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
