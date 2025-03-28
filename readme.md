@@ -24,7 +24,7 @@ npm install
 ```
 - Create a `.env` file in the `Backend` directory and add:
   ```plaintext
-  PORT=5000
+  PORT=3000
   MONGO_URI=your_mongodb_connection_string
   JWT_SECRET=your_secret_key
   ```
@@ -62,8 +62,8 @@ pip install -r requirements.txt
   ```
 
 ## 5. Access the Application
-- **Backend API**: `http://localhost:5000/`
-- **Frontend UI**: `http://localhost:3000/`
+- **Backend API**: `http://localhost:3000/`
+- **Frontend UI**: `http://localhost:5173/`
 - **Streamlit App**: Runs on a default Streamlit port (e.g., `http://localhost:8501/`)
 
 
