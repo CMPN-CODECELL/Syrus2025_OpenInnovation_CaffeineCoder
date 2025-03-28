@@ -1,12 +1,42 @@
 import mongoose from "mongoose";
 
-const mentorshipRequestSchema = new mongoose.Schema({
-    mentee: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    mentor: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    skillsRequested: { type: [String], required: true },
-    status: { type: String, enum: ["Pending", "Accepted", "Rejected", "Completed"], default: "Pending" },
-    message: { type: String }
-}, { timestamps: true });
+const MentorshipRequestSchema = new mongoose.Schema({
+  learner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  mentor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  skills: [{
+    name: { type: String, required: true },
+    level: { type: String, enum: ['beginner', 'intermediate', 'advanced'] }
+  }],
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'declined', 'completed'],
+    default: 'pending'
+  },
+  message: String,
+  scheduledSessions: [{
+    date: Date,
+    duration: Number, // in minutes
+    status: {
+      type: String,
+      enum: ['scheduled', 'completed', 'cancelled'],
+      default: 'scheduled'
+    },
+    meetingLink: String
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
+});
 
-const MentorshipRequest = mongoose.model("MentorshipRequest", mentorshipRequestSchema);
-export default MentorshipRequest;
+export default mongoose.model('MentorshipRequest', MentorshipRequestSchema);
