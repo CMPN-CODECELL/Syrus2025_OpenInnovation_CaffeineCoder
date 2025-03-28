@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import connectDB from './db/db.js';
 import { initGemini } from './controllers/resume.controller.js';
 import { userRouter } from './route/user.route.js';
@@ -9,6 +10,8 @@ import mentorshipRouter from './route/mentorship.route.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
+
+
 
 // Validate required environment variables
 const requiredEnvVars = ['GEMINI_API_KEY', 'MONGO_URI'];
@@ -23,6 +26,14 @@ console.log('✅ Environment variables loaded');
 
 // Initialize Express
 const app = express();
+
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Match your React app's port (5173)
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));

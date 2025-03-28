@@ -1,76 +1,166 @@
-import zod from 'zod';
 import { Router } from 'express';
-import {UserRegisterSchema , UserLoginSchema } from '../zod-schemas/user.zod.js';
+import {
+  UserRegisterSchema,
+  UserLoginSchema,
+  UserUpdateSchema
+} from '../zod-schemas/user.zod.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/user.model.js';
+
 export const userRouter = Router();
 
-userRouter.post('/register',async (req,res)=>{
-    try {
-        const parseResult = UserRegisterSchema.safeParse(req.body);
-        console.log(req.body);
-        
-        if(!parseResult.success){
+// Register endpoint
+userRouter.post('/register', async (req, res) => {
+  try {
+    console.log(req.body);
+    const parseResult = UserRegisterSchema.safeParse(req.body);
 
-            return res.status(400).json({message:"Error: "+parseResult.error.message});
-        }
-        const user = parseResult.data;
-        const userExists = await User.findOne({email:user.email});
-        if(userExists){
-            return res.status(400).json({message:"User already exists"});
-        }
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password,salt);
-        const token = jwt.sign({email:user.email,role:user.role},process.env.JWT_SECRET);
-        const newUser = new User(user);
-        await newUser.save();
-        res.status(201).json({message:"User created successfully",token:token});
-    } catch (error) {
-        res.status(500).json({message:error.message});
+    console.log(parseResult);
+    
+    if (!parseResult.success) {
+      console.log("Validation errors:", parseResult.error);
+      return res.status(400).json({ 
+        message: "Validation failed",
+        errors: parseResult.error.flatten() 
+      });
     }
+
+    const userData = parseResult.data;
+    console.log(userData);
+    
+    const userExists = await User.findOne({ email: userData.email });
+    
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    userData.password = await bcrypt.hash(userData.password, salt);
+
+    // Create new user
+    const newUser = new User({
+      ...userData,
+      tokens: 10, // Initial tokens for new users
+      verificationStatus: {
+        emailVerified: false,
+        skillVerified: false,
+        mentorApproved: false
+      }
+    });
+
+    await newUser.save();
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        userId: newUser._id,
+        email: newUser.email,
+        role: newUser.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        profilePicture: newUser.profilePicture
+      }
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
+// Login endpoint
 userRouter.post('/login', async (req, res) => {
-    try {
-        const parseResult = UserLoginSchema.safeParse(req.body);
-        if (!parseResult.success) {
-            return res.status(400).json({ message: parseResult.error.message });
-        }
-
-        const user = parseResult.data;
-
-        const userExists = await User.findOne({ email: user.email });
-        if (!userExists) {
-            return res.status(400).json({ message: "User does not exist" });
-        }
-
-        const validPassword = await bcrypt.compare(user.password, userExists.password);
-        if (!validPassword) {
-            return res.status(400).json({ message: "Invalid password" });
-        }
-
-        // Include role in the JWT token
-        const token = jwt.sign(
-            { 
-                email: userExists.email,
-                role: userExists.role 
-            }, 
-            process.env.JWT_SECRET
-        );
-        
-        res.status(200).json({ 
-            message: "Login successful", 
-            token: token,
-            user: {
-                name: userExists.name,
-                email: userExists.email,
-                role: userExists.role,
-                profilePicture: userExists.profilePicture
-            }
-        });
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const parseResult = UserLoginSchema.safeParse(req.body);
+    
+    if (!parseResult.success) {
+      return res.status(400).json({ message: parseResult.error.errors });
     }
+
+    const { email, password } = parseResult.data;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    
+    if (!validPassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profilePicture: user.profilePicture
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get user profile
+userRouter.get('/profile/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update user profile
+userRouter.put('/profile/:id', async (req, res) => {
+  try {
+    const parseResult = UserUpdateSchema.safeParse(req.body);
+    
+    if (!parseResult.success) {
+      return res.status(400).json({ message: parseResult.error.errors });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      parseResult.data,
+      { new: true }
+    ).select('-password');
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
