@@ -3,7 +3,7 @@ import connectDB from './db/db.js';
 import dotenv from 'dotenv';
 import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
-
+import skillSwapRouter from './route/skillswap.route.js';
 // Config
 dotenv.config();
 
@@ -15,7 +15,7 @@ connectDB();
 
 app.use('/user',userRouter);
 app.use('/resume', resumeRoutes);
-
+app.use('/skillswap', skillSwapRouter);
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
