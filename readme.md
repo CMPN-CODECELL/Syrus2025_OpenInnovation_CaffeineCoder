@@ -9,32 +9,63 @@ Ensure you have the following installed:
 - Postman (for API testing, optional)
 
 ### Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/skillswap.git
-   cd skillswap
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   - Create a `.env` file in the root directory.
-   - Add the required environment variables:
-     ```plaintext
-     PORT=3000
-     MONGO_URI=your_mongodb_connection_string
-     JWT_SECRET=your_secret_key
-     ```
-4. Start the server:
-   ```bash
-   npm start
-   ```
-   or for development:
-   ```bash
-   npm run dev
-   ```
-5. The API will be running on `http://localhost:3000/`
+# Project Setup Guide
+
+## 1. Clone the Repository
+```bash
+git clone https://github.com/CMPN-CODECELL/Syrus2025_OpenInnovation_CaffeineCoder.git
+cd Syrus2025_OpenInnovation_CaffeineCoder
+```
+
+## 2. Backend Setup
+```bash
+cd Backend
+npm install
+```
+- Create a `.env` file in the `Backend` directory and add:
+  ```plaintext
+  PORT=5000
+  MONGO_URI=your_mongodb_connection_string
+  JWT_SECRET=your_secret_key
+  ```
+- Start the backend server:
+  ```bash
+  npm start
+  ```
+  or for development:
+  ```bash
+  npm run dev
+  ```
+
+## 3. Frontend Setup
+```bash
+cd ../Frontend
+npm install
+```
+- Start the frontend:
+  ```bash
+  npm start
+  ```
+  or for development:
+  ```bash
+  npm run dev
+  ```
+
+## 4. Streamlit App Setup
+```bash
+cd ../streamlit
+pip install -r requirements.txt
+```
+- Run the Streamlit app:
+  ```bash
+  streamlit run app.py
+  ```
+
+## 5. Access the Application
+- **Backend API**: `http://localhost:5000/`
+- **Frontend UI**: `http://localhost:3000/`
+- **Streamlit App**: Runs on a default Streamlit port (e.g., `http://localhost:8501/`)
+
 
 ---
 
