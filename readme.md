@@ -45,10 +45,9 @@ Ensure you have the following installed:
 
 **Proposed Solutions:**
 - **Verification Mechanism:** Participants submit proof of learning (e.g., a quiz, summary, or recorded session snippet).
-- **Cooldown Period:** A minimum time spent in a session before earning badges.
 - **Session Monitoring:** Periodic check-ins to ensure active participation.
 - **Activity Tracking:** AI-based analysis of discussions to detect meaningful engagement.
-- **Session Reporting:** Users can flag suspicious activities for review.
+
 
 ### Rating System Based on Sentiment Analysis
 **Feature:** Implement a sentiment-based rating system for learners.
@@ -56,8 +55,7 @@ Ensure you have the following installed:
 **How it Works:**
 1. **Real-time sentiment analysis** during a session using Natural Language Processing (NLP).
 2. Learners’ feedback and engagement levels determine their rating.
-3. **Voice-based sentiment detection** (if applicable) for more accurate evaluation.
-4. Ratings influence reputation and future pairing in SkillSwap.
+3. Ratings influence reputation and future pairing in SkillSwap.
 5. Encourages high-quality teaching and learning.
 
 **Tools & Technologies:**
