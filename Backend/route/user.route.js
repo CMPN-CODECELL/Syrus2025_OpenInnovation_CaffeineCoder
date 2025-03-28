@@ -52,7 +52,7 @@ userRouter.post('/login', async (req, res) => {
 
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
         res.header.Authorization = token;
-        res.status(200).json({ message: "Login successful", token: token });
+        res.status(200).json({ message: "Login successful", token: token , role:userExists.role ,name:userExists.name , email:userExists.email});
 
     } catch (error) {
         res.status(500).json({ message: error.message });
