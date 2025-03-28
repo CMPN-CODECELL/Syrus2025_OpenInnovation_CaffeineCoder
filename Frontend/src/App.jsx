@@ -8,6 +8,9 @@ import LearnerDashboard from './pages/learner/Dashboard';
 import EmployerDashboard from './pages/employer/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import MentorDashboard from './pages/mentor/Dashboard';
+import SkillSwap from './pages/learner/SkillSwap';
+import FindMentor from './pages/learner/FindMentors';
+import ResumeBuilder from './pages/learner/ResumeBuilder';
 
 function App() {
   return (
@@ -23,6 +26,10 @@ function App() {
               <Route path="/learner/dashboard" element={<LearnerDashboard />} />
               <Route path='/mentor/dashboard' element={<MentorDashboard />} />
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+              <Route path='/skill-swap' element={<SkillSwap />} />
+              <Route path='/find-mentor' element={<FindMentor />} />
+              <Route path="/resume-builder" element={<ResumeBuilder />} />
+
             </Routes>
           </main>
           <Footer />
