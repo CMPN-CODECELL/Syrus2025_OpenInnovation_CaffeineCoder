@@ -11,6 +11,7 @@ import MentorDashboard from './pages/mentor/Dashboard';
 import SkillSwap from './pages/learner/SkillSwap';
 import FindMentor from './pages/learner/FindMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
+import VideoPage from './pages/learner/VideoPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path='/skill-swap' element={<SkillSwap />} />
               <Route path='/find-mentor' element={<FindMentor />} />
               <Route path="/resume-builder" element={<ResumeBuilder />} />
+              <Route path='/video-page' element={<VideoPage />} />
 
             </Routes>
           </main>
