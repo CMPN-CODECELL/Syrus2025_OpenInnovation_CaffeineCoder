@@ -7,6 +7,7 @@ import Register from './pages/auth/Register';
 import LearnerDashboard from './pages/learner/Dashboard';
 import EmployerDashboard from './pages/employer/Dashboard';
 import { AuthProvider } from './context/AuthContext';
+import MentorDashboard from './pages/mentor/Dashboard';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/learner/dashboard" element={<LearnerDashboard />} />
-              
+              <Route path='/mentor/dashboard' element={<MentorDashboard />} />
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
             </Routes>
           </main>

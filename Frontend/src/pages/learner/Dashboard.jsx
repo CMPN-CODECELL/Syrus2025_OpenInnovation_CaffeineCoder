@@ -1,5 +1,6 @@
 import { useAuth } from '../../context/AuthContext';
 import { BookOpen, Users, Star, Briefcase, Rocket, Award } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 function LearnerDashboard() {
   const { user } = useAuth();
