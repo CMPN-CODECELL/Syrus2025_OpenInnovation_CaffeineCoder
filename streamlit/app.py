@@ -470,7 +470,7 @@ def main():
                 st.session_state.frame_count += 1
                 
                 # Add small delay to control frame rate
-                time.sleep(0.05)
+                time.sleep(5)
                 
                 # Force refresh to get new frame
                 st.rerun()
