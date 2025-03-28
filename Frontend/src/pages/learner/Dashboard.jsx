@@ -1,9 +1,11 @@
 import { useAuth } from '../../context/AuthContext';
-import { BookOpen, Users, Star, Briefcase, Rocket, Award } from 'lucide-react';
+import { BookOpen, Users, Star, Briefcase, Rocket, Award, Search, FileText } from 'lucide-react';
 import { Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function LearnerDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-8">
@@ -13,9 +15,53 @@ function LearnerDashboard() {
             <h1 className="text-2xl font-bold">Welcome back, {user?.email}</h1>
             <p className="text-gray-600">Continue your learning journey</p>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Find a Mentor
-          </button>
+          <div className="flex gap-4">
+            <button 
+              onClick={() => navigate('/resume-builder')}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              Resume Builder
+            </button>
+            <button 
+              onClick={() => navigate('/skill-swap')}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+            >
+              Skill Swap
+            </button>
+            <button 
+              onClick={() => navigate('/find-mentor')}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Find a Mentor
+            </button>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Search for jobs..."
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Search for skills to learn..."
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -33,14 +79,16 @@ function LearnerDashboard() {
           </div>
           <div className="bg-purple-50 p-4 rounded-lg">
             <Star className="h-8 w-8 text-purple-600 mb-2" />
-            <h3 className="font-semibold">Skills Mastered</h3>
-            <p className="text-2xl font-bold">5</p>
-            <p className="text-sm text-gray-600">Verified by mentors</p>
+            <h3 className="font-semibold">Skill Points</h3>
+            <p className="text-2xl font-bold">150</p>
+            <p className="text-sm text-gray-600">Available for redemption</p>
           </div>
         </div>
       </div>
 
+      {/* Rest of the dashboard content remains unchanged */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Current Learning Path section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Current Learning Path</h2>
@@ -67,6 +115,7 @@ function LearnerDashboard() {
           </div>
         </div>
 
+        {/* Upcoming Sessions section */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Upcoming Sessions</h2>
@@ -98,6 +147,7 @@ function LearnerDashboard() {
         </div>
       </div>
 
+      {/* Job Matches section */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold">Recommended Job Matches</h2>
