@@ -50,9 +50,25 @@ userRouter.post('/login', async (req, res) => {
             return res.status(400).json({ message: "Invalid password" });
         }
 
-        const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
-        res.header.Authorization = token;
-        res.status(200).json({ message: "Login successful", token: token });
+        // Include role in the JWT token
+        const token = jwt.sign(
+            { 
+                email: userExists.email,
+                role: userExists.role 
+            }, 
+            process.env.JWT_SECRET
+        );
+        
+        res.status(200).json({ 
+            message: "Login successful", 
+            token: token,
+            user: {
+                name: userExists.name,
+                email: userExists.email,
+                role: userExists.role,
+                profilePicture: userExists.profilePicture
+            }
+        });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
