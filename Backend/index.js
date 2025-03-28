@@ -1,11 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { initGemini } from './controllers/resume.controller.js';
 import connectDB from './db/db.js';
+import { initGemini } from './controllers/resume.controller.js';
 import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
+import skillSwapRouter from './route/skillswap.route.js';
 
-// Load environment variables first
+// Load environment variables
 dotenv.config({ path: './.env' });
 
 const app = express();
@@ -16,12 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 
 (async () => {
   try {
-    // Database connection
-    await connectDB();
+    await connectDB(); // Connect to MongoDB
     console.log('✅ Database connected');
 
-    // AI service initialization
-    initGemini();
+    initGemini(); // Initialize Gemini AI
     console.log('✅ Gemini AI initialized');
 
     // Routes
