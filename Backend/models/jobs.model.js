@@ -27,23 +27,50 @@ const jobSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
+    preferredSkills: {
+        type: [String],
+        default: []
+    },
     company: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Company",
+        ref: "Employer",
         required: true
     },
     applicants: [{
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        status: { type: String, enum: ["Applied", "Interviewing", "Hired", "Rejected"], default: "Applied" },
-        appliedAt: { type: Date, default: Date.now }
+        status: { 
+            type: String, 
+            enum: ["Applied", "Interviewing", "Hired", "Rejected"], 
+            default: "Applied" 
+        },
+        appliedAt: { 
+            type: Date, 
+            default: Date.now 
+        },
+        matchScore: { 
+            type: Number 
+        }
     }],
     status: {
         type: String,
         enum: Object.values(JOB_STATUS),
         default: JOB_STATUS.OPEN
     },
+    postedAt: {
+        type: Date,
+        default: Date.now
+    },
     deadline: {
         type: Date,
+        required: true
+    },
+    isRemote: {
+        type: Boolean,
+        default: false
+    },
+    experienceLevel: {
+        type: String,
+        enum: ["Entry", "Mid", "Senior", "Lead", "Executive"],
         required: true
     }
 }, { timestamps: true });

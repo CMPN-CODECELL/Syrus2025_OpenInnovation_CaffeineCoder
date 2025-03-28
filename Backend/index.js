@@ -8,40 +8,12 @@ import resumeRoutes from './route/resume.route.js';
 // Load environment variables first
 dotenv.config({ path: './.env' });
 
-// Environment validation
-const requiredEnvVars = ['GEMINI_API_KEY', 'MONGO_URI'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-
-if (missingVars.length > 0) {
-  console.error('Missing required environment variables:', missingVars);
-  process.exit(1);
-}
-
-console.log('Environment configuration:', {
-  geminiKey: '✔️ Loaded',
-  port: process.env.PORT || '3000 (default)',
-  mongo: '✔️ Loaded'
-});
-
-// Initialize application
 const app = express();
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'healthy',
-    services: {
-      database: 'connected', // This would be dynamic in production
-      gemini: 'initialized'
-    }
-  });
-});
-
-// Initialize services
 (async () => {
   try {
     // Database connection
@@ -55,19 +27,8 @@ app.get('/health', (req, res) => {
     // Routes
     app.use('/user', userRouter);
     app.use('/resume', resumeRoutes);
+    app.use("/jobs", jobRoutes);
 
-    // Basic route
-    app.get('/', (req, res) => {
-      res.send(`
-        <h1>Resume Generator API</h1>
-        <p>Endpoints available:</p>
-        <ul>
-          <li>POST /resume/generate-resume-section</li>
-          <li>POST /resume/evaluate-resume</li>
-          <li>User routes at /user</li>
-        </ul>
-      `);
-    });
 
     // Error handling middleware
     app.use((err, req, res, next) => {
