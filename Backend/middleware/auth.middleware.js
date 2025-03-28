@@ -9,11 +9,7 @@ export const authMiddleware = (req, res, next) => {
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
         req.userId = verified.email;
-        console.log(verified.email);
-        
         req.role = verified.role;
-        console.log("Passed Middleware");
-        
         next();
     } catch (error) {
         res.status(400).json({ message: "Invalid Token" });

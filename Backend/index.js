@@ -5,6 +5,7 @@ import { initGemini } from './controllers/resume.controller.js';
 import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
 import skillSwapRouter from './route/skillswap.route.js';
+import mentorshipRouter from './route/mentorship.route.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -15,6 +16,49 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+<<<<<<< HEAD
+=======
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    services: {
+      database: 'connected', // This should be dynamically checked in production
+      gemini: 'initialized'
+    }
+  });
+});
+
+// Routes
+app.use('/user', userRouter);
+app.use('/resume', resumeRoutes);
+app.use('/skillswap', skillSwapRouter);
+app.use('/mentorship', mentorshipRouter);
+
+// Basic Route
+app.get('/', (req, res) => {
+  res.send(`
+    <h1>Resume Generator API</h1>
+    <p>Endpoints available:</p>
+    <ul>
+      <li>POST /resume/generate-resume-section</li>
+      <li>POST /resume/evaluate-resume</li>
+      <li>User routes at /user</li>
+    </ul>
+  `);
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('❌ Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
+});
+
+// Start Server after initializing services
+>>>>>>> main
 (async () => {
   try {
     await connectDB(); // Connect to MongoDB
