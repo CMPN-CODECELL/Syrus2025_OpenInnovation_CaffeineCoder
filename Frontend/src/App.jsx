@@ -9,7 +9,7 @@ import EmployerDashboard from './pages/employer/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import MentorDashboard from './pages/mentor/Dashboard';
 import SkillSwap from './pages/learner/SkillSwap';
-import FindMentor from './pages/learner/FindMentors';
+import FindMentors from './pages/learner/FIndMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
               <Route path='/mentor/dashboard' element={<MentorDashboard />} />
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path='/skill-swap' element={<SkillSwap />} />
-              <Route path='/find-mentor' element={<FindMentor />} />
+              <Route path='/find-mentor' element={<FindMentors />} />
               <Route path="/resume-builder" element={<ResumeBuilder />} />
 
             </Routes>
