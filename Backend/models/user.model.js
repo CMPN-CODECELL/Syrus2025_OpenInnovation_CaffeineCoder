@@ -14,15 +14,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        enum: ["Learner", "Mentor", "Employer"],
+        default: "Learner"
+    },
     profilePicture: {
         type: String, // URL to profile image
         default: "default_profile.png"
     },
-    isMentor: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
+
     skills: {
         type: [String]
     },
