@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-
+import axios from 'axios';
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
@@ -14,9 +14,21 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Add API call logic here
-      login({ email: formData.email });
-      navigate('/dashboard');
+      const data = await axios.post('http://localhost:3000/user/login', formData);
+      const role = data.data.role;
+      const token = data.data.token;
+      const name = data.data.name;
+      const email = data.data.email;
+
+      if(role === "Learner"){
+        navigate('/');
+      }
+      if(role === "Mentor"){
+        navigate('/Mentor');
+      }
+      if(role === "Employer"){
+        navigate('/Employer');
+      }
     } catch (err) {
       setError('Invalid credentials');
     }
