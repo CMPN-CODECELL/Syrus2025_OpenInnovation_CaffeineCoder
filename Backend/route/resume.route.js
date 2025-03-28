@@ -6,7 +6,10 @@ import {
 } from '../controllers/resume.controller.js';
 
 const router = express.Router();
-router.post('/generate-resume', generateResume);
-router.post('/evaluate-resume', evaluateResume);
+// import * from "../controller/resume.controller.js";
+
+// router.route("/generate-resume").post(generateResume);
+
+// router.route
 
 export default router;

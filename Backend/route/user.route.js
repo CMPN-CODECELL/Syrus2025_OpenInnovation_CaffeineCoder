@@ -22,7 +22,7 @@ userRouter.post('/register',async (req,res)=>{
         }
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password,salt);
-        const token = jwt.sign({email:user.email},process.env.JWT_SECRET);
+        const token = jwt.sign({email:user.email,role:user.role},process.env.JWT_SECRET);
         const newUser = new User(user);
         await newUser.save();
         res.status(201).json({message:"User created successfully",token:token});
@@ -39,28 +39,19 @@ userRouter.post('/login', async (req, res) => {
         }
 
         const user = parseResult.data;
-        console.log('a');
 
-        // ✅ Await the user query
         const userExists = await User.findOne({ email: user.email });
         if (!userExists) {
             return res.status(400).json({ message: "User does not exist" });
         }
 
-        console.log('b');
-        console.log(user.password);
-        console.log(userExists);
-
-        // ✅ Compare passwords correctly
         const validPassword = await bcrypt.compare(user.password, userExists.password);
         if (!validPassword) {
             return res.status(400).json({ message: "Invalid password" });
         }
 
-        console.log('c');
-
         const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
-        res.header('auth-token', token);
+        res.header.Authorization = token;
         res.status(200).json({ message: "Login successful", token: token });
 
     } catch (error) {
