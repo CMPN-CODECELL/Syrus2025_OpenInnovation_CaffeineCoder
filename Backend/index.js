@@ -5,6 +5,7 @@ import { initGemini } from './controllers/resume.controller.js';
 import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
 import skillSwapRouter from './route/skillswap.route.js';
+import mentorshipRouter from './route/mentorship.route.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -42,6 +43,7 @@ app.get('/health', (req, res) => {
 app.use('/user', userRouter);
 app.use('/resume', resumeRoutes);
 app.use('/skillswap', skillSwapRouter);
+app.use('/mentorship', mentorshipRouter);
 
 // Basic Route
 app.get('/', (req, res) => {
