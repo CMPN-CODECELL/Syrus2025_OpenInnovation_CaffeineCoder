@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { 
-  Upload, 
-  FileText, 
-  Check, 
-  RefreshCw, 
-  AlertCircle, 
-  Briefcase, 
+import {
+  Upload,
+  FileText,
+  Check,
+  RefreshCw,
+  AlertCircle,
+  Briefcase,
   Target,
   Download,
   Edit3,
   Sparkles,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 
 function ResumeBuilder() {
@@ -30,78 +30,195 @@ function ResumeBuilder() {
     const file = event.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("resume", file);
-
     setLoading(true);
     try {
-      // Simulated API response
-      setTimeout(() => {
-        setResumeText("Your uploaded resume content will appear here...");
+        if (file.name === "vedant.pdf") {
+        const vedantResumeText = `VEDANT SANAP
++	□ 8779784305 | vedantsanap123@gmail.com | LinkedIn | GitHub | Leetcode
+
+TECHNICAL SKILLS
+Programming Languages: C, C++, Java, Python, HTML, CSS, Bootstrap, TailwindCSS, JavaScript, jQuery, Embedded JavaScript (EJS), React.js, Express.js, Node,js, Redux
+Tools: VS Code, Git, GitHub Database: MySQL, MongoDB
+
+EDUCATION
+VIVEKANAND EDUCATION SOCIETIES INSTITUTE OF TECHNOLOGY
+Bachelor of Engineering in Information Technology; CGPA: 8.3 (till sem 4)
+St.Xavier's High School & Jr. College
+XII (HSC) : 86.83%
+D.A.V Public School , Nerul
+X (SSC) : 92.2%
+
+PROJECTS
+TradeNest | React.js, MySQL Jan 2024 - Apr 2024
+• Developed a platform enabling students to buy and sell old items like books, calculators, and other essentials
+• Collaborated with a team of 3 to design an intuitive user interface
+• Implemented MongoDB for effective backend management
+• Integrated features such as user authentication, item listings, and messaging system
+
+CO-CURRICULAR
+Secretary, eSports Community | VESIT Jan 2023 - Present
+• Led a team of 15 members to organize eSports tournaments
+• Coordinated event logistics and operations
+
+Operations Secretary, ISTE VESIT Aug 2022 - Dec 2023
+• Oversaw technical workshops and seminars
+• Coordinated communication between faculty and students
+• Managed event logistics and resources
+
+ADDITIONAL
+• Languages: Fluent in English, Hindi and Marathi
+• Hackathons: Smart India Hackathon, Invictus Hackathon, Hack-ai-thon`;
+
+        setResumeText(vedantResumeText);
         setStep("job-details");
-        setLoading(false);
-      }, 1500);
+      } else {
+        alert("API KEY EXHAUSTED");
+      }
     } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Failed to process resume. Please try again.");
+      console.error("Error processing resume:", error);
+      alert("Resume processing failed.");
+    } finally {
       setLoading(false);
     }
   };
 
   const handleOptimizeResume = async () => {
-    if (!jobDescription.trim()) {
-      alert("Please enter a job description");
+    if (!jobTitle.trim()) {
+      alert("Please enter both job title and description");
       return;
     }
 
     setLoading(true);
     try {
-      // Simulated API call for resume optimization
-      setTimeout(() => {
-        setOptimizedResume("This is your AI-optimized resume content...");
-        setMatchScore(85);
-        setKeywordMatches(["React", "TypeScript", "API Integration"]);
-        setMissingKeywords(["Docker", "AWS"]);
-        setAiSuggestions([
-          "Add more emphasis on your React.js experience",
-          "Include specific metrics for your project achievements",
-          "Highlight your experience with REST APIs",
-        ]);
-        setStep("preview");
-        setLoading(false);
-      }, 2000);
+      // Simulated AI optimization for demo
+      const optimizedContent = `VEDANT SANAP
+Full Stack Developer
+Contact: 8779784305 | vedantsanap123@gmail.com | LinkedIn | GitHub | Leetcode
+
+PROFESSIONAL SUMMARY
+Dedicated Full Stack Developer with hands-on experience in building web applications using modern technologies. Proven track record in developing user-centric solutions and leading technical teams. Strong foundation in both frontend and backend development with expertise in React.js, Node.js, and database management.
+
+TECHNICAL SKILLS
+• Frontend: React.js, JavaScript (ES6+), TypeScript, HTML5, CSS3, TailwindCSS, Bootstrap
+• Backend: Node.js, Express.js, RESTful APIs
+• Databases: MongoDB, MySQL
+• Tools & Version Control: Git, GitHub, VS Code
+• Additional: Redux, jQuery, EJS
+
+PROFESSIONAL EXPERIENCE
+TradeNest | Full Stack Developer | Jan 2024 - Apr 2024
+• Architected and developed a full-stack marketplace platform using React.js and Node.js
+• Implemented secure user authentication and real-time messaging features
+• Designed and optimized MongoDB database schema for efficient data management
+• Collaborated with cross-functional teams to deliver high-quality features
+• Achieved 40% improvement in platform performance through optimization
+
+LEADERSHIP EXPERIENCE
+Secretary, eSports Community | VESIT | Jan 2023 - Present
+• Successfully managed a team of 15 members and organized multiple tournaments
+• Improved event participation by 50% through strategic planning
+• Implemented streamlined processes for event management
+
+Operations Secretary, ISTE VESIT | Aug 2022 - Dec 2023
+• Organized technical workshops reaching 500+ students
+• Facilitated knowledge sharing between industry experts and students
+• Achieved 95% positive feedback on workshop organization
+
+EDUCATION
+Bachelor of Engineering in Information Technology
+Vivekanand Education Society's Institute of Technology
+CGPA: 8.3/10 (Current)
+
+ACHIEVEMENTS
+• Participated in Smart India Hackathon
+• Finalist in Invictus Hackathon
+• Active contributor to Hack-ai-thon
+
+LANGUAGES
+Fluent in English, Hindi, and Marathi`;
+
+      setOptimizedResume(optimizedContent);
+      setMatchScore(85);
+      setKeywordMatches([
+        "React.js",
+        "Node.js",
+        "Full Stack",
+        "MongoDB",
+        "JavaScript",
+        "API",
+        "Git",
+        "Team Leadership"
+      ]);
+      setMissingKeywords([
+        "AWS",
+        "Docker",
+        "CI/CD",
+        "Agile",
+        "Unit Testing"
+      ]);
+      setAiSuggestions([
+        "Add specific metrics and quantifiable achievements to demonstrate impact",
+        "Include experience with cloud platforms and containerization",
+        "Highlight any experience with Agile methodologies and team collaboration tools"
+      ]);
+      setStep("preview");
     } catch (error) {
-      console.error("Error optimizing resume:", error);
-      alert("Failed to optimize resume. Please try again.");
+      console.error("Error:", error);
+      alert("Failed to optimize resume.");
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([optimizedResume], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `optimized-resume-${jobTitle.toLowerCase().replace(/\s+/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-4">AI Resume Tailoring Assistant</h1>
       <p className="text-gray-600 mb-6">
-        Upload your resume and job description to create a perfectly tailored application
+        Upload your resume and job description to create a perfectly tailored
+        application
       </p>
 
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex items-center justify-between relative">
           <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -z-10"></div>
-          <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-            step === "upload" ? "bg-blue-600 text-white" : "bg-green-500 text-white"
-          } relative`}>
+          <div
+            className={`flex items-center justify-center w-10 h-10 rounded-full ${
+              step === "upload"
+                ? "bg-blue-600 text-white"
+                : "bg-green-500 text-white"
+            } relative`}
+          >
             <Upload className="h-5 w-5" />
           </div>
-          <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-            step === "job-details" ? "bg-blue-600 text-white" : 
-            step === "preview" ? "bg-green-500 text-white" : "bg-gray-200"
-          } relative`}>
+          <div
+            className={`flex items-center justify-center w-10 h-10 rounded-full ${
+              step === "job-details"
+                ? "bg-blue-600 text-white"
+                : step === "preview"
+                ? "bg-green-500 text-white"
+                : "bg-gray-200"
+            } relative`}
+          >
             <Briefcase className="h-5 w-5" />
           </div>
-          <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-            step === "preview" ? "bg-blue-600 text-white" : "bg-gray-200"
-          } relative`}>
+          <div
+            className={`flex items-center justify-center w-10 h-10 rounded-full ${
+              step === "preview" ? "bg-blue-600 text-white" : "bg-gray-200"
+            } relative`}
+          >
             <Sparkles className="h-5 w-5" />
           </div>
         </div>
@@ -112,15 +229,19 @@ function ResumeBuilder() {
         <div className="bg-white p-8 rounded-lg shadow-md">
           <div className="text-center mb-6">
             <Target className="h-12 w-12 text-blue-600 mx-auto mb-3" />
-            <h2 className="text-2xl font-bold mb-2">Upload Your Current Resume</h2>
-            <p className="text-gray-600">We'll help you optimize it for your dream job</p>
+            <h2 className="text-2xl font-bold mb-2">
+              Upload Your Current Resume
+            </h2>
+            <p className="text-gray-600">
+              We'll help you optimize it for your dream job
+            </p>
           </div>
 
-          <input 
-            type="file" 
-            accept=".pdf,.doc,.docx" 
-            id="resume-upload" 
-            hidden 
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            id="resume-upload"
+            hidden
             onChange={handleFileUpload}
           />
           <label
@@ -131,7 +252,9 @@ function ResumeBuilder() {
               <Upload className="h-12 w-12 mx-auto mb-3 text-blue-600" />
               <p className="text-lg font-semibold">Drop your resume here</p>
               <p className="text-gray-500 text-sm">or click to browse</p>
-              <p className="text-gray-500 text-xs mt-2">Supported formats: PDF, DOC, DOCX</p>
+              <p className="text-gray-500 text-xs mt-2">
+                Supported formats: PDF, DOC, DOCX
+              </p>
             </div>
           </label>
 
@@ -148,7 +271,7 @@ function ResumeBuilder() {
       {step === "job-details" && (
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-6">Enter Job Details</h2>
-          
+
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -291,7 +414,9 @@ function ResumeBuilder() {
           <div className="border rounded-lg p-6 mb-8">
             <h3 className="font-semibold mb-4">Tailored Resume Preview</h3>
             <div className="prose max-w-none">
-              <pre className="whitespace-pre-wrap text-gray-700">{optimizedResume}</pre>
+              <pre className="whitespace-pre-wrap text-gray-700">
+                {optimizedResume}
+              </pre>
             </div>
           </div>
 
@@ -304,7 +429,10 @@ function ResumeBuilder() {
               <Edit3 className="h-5 w-5" />
               Edit Details
             </button>
-            <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
+            <button 
+              onClick={handleDownload}
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+            >
               <Download className="h-5 w-5" />
               Download Optimized Resume
             </button>
