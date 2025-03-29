@@ -77,7 +77,7 @@ function EmployerDashboard() {
           <div className="bg-yellow-50 p-4 rounded-lg">
             <Search className="h-8 w-8 text-yellow-600 mb-2" />
             <h3 className="font-semibold">Talent Matches</h3>
-            <p className="text-2xl font-bold">15</p>
+            <p className="text-2xl font-bold">4</p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg">
             <CheckCircle className="h-8 w-8 text-purple-600 mb-2" />
