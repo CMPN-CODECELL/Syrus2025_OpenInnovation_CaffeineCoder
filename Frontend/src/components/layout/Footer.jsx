@@ -6,7 +6,7 @@ function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">LearnConnect</h3>
+            <h3 className="text-lg font-semibold mb-4">EduTrade</h3>
             <p className="text-gray-600">
               Connecting learners, mentors, and employers in a collaborative learning ecosystem.
             </p>
@@ -52,7 +52,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t text-center text-gray-600">
-          <p>&copy; 2024 LearnConnect. All rights reserved.</p>
+          <p>&copy; 2024 EduTrade. All rights reserved.</p>
         </div>
       </div>
     </footer>
