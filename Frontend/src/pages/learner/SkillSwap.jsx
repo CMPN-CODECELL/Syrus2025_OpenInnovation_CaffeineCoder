@@ -493,13 +493,13 @@ const handleSkillSwapSubmit = (formData) => {
           <h1 className="text-4xl font-bold mb-2 text-gray-800">Skill Swap</h1>
           <p className="text-gray-600 text-lg">Learn, teach, and earn points for certificates</p>
         </div>
-        <button 
+        {/* <button 
   onClick={() => setShowSkillSwapForm(true)}
   className="mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 mx-auto"
 >
   <BookOpen className="h-5 w-5" />
   Create Skill Swap Request
-</button>
+</button> */}
         {/* Points Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           {[
