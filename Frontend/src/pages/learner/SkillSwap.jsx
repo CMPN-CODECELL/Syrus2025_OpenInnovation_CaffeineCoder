@@ -677,7 +677,7 @@ const handleSkillSwapSubmit = (formData) => {
           </div>
         </div>
         <div className="mt-8 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-  <div className="p-6">
+  {/* <div className="p-6">
     <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Skill Swap Requests</h2>
     
     {skillSwapRequests.length === 0 ? (
@@ -721,7 +721,7 @@ const handleSkillSwapSubmit = (formData) => {
         ))}
       </div>
     )}
-  </div>
+  </div> */}
 </div>
 {showSkillSwapForm && (
   <SkillSwapForm 
