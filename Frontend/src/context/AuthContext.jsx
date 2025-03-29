@@ -25,8 +25,12 @@ export const AuthProvider = ({ children }) => {
   const fetchUserData = async () => {
     try {
       const response = await axios.get('/user/profile');
-      setUser(response.data);
-      localStorage.setItem('user', JSON.stringify(response.data));
+    const userWithId = {
+      ...response.data,
+      id: response.data._id || response.data.id
+    };
+    setUser(userWithId);
+    localStorage.setItem('user', JSON.stringify(userWithId));
     } catch (error) {
       console.error("Failed to fetch user data:", error);
       logout();
@@ -34,21 +38,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (userData, authToken) => {
+    const userWithId = {
+      ...userData,
+      id: userData._id || userData.id // Handle both MongoDB _id and regular id
+    };
     localStorage.setItem('token', authToken);
     localStorage.setItem('user', JSON.stringify(userData));
     setToken(authToken);
     setUser(userData);
+    setUser(userWithId);
     axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     navigate(`/${userData.role.toLowerCase()}/dashboard`);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setToken(null);
-    setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
-    navigate('/login');
+  const logout = async () => {
+    try {
+      // Attempt server-side logout
+      await axios.post('/user/logout');
+    } catch (error) {
+      console.error('Logout API error:', error);
+      // Continue with client-side cleanup even if API fails
+    } finally {
+      // Client-side cleanup
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setToken(null);
+      setUser(null);
+      delete axios.defaults.headers.common['Authorization'];
+      navigate('/login');
+    }
   };
 
   const updateUser = (updatedUser) => {
