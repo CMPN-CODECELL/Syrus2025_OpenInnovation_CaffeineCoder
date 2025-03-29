@@ -35,18 +35,12 @@ export const authMiddleware = async (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-<<<<<<< HEAD
-
-    // Check if user still exists
-    const user = await User.findById(decoded.userId);
-=======
 
     console.log(`Decoded token: ${JSON.stringify(decoded)}`); // Debugging line to check decoded token
 
     // Check if user still exists
     const user = await User.findById(decoded.userId);
     console.log(`User: ${user}`); // Debugging line to check user
->>>>>>> 5bff049cc1b462922222cb0548eb38353960bf73
     if (!user) {
       throw new AuthenticationError('User account no longer exists or is inactive');
     }
@@ -118,4 +112,4 @@ export const restrictTo = (...roles) => {
     } catch (error) {
         res.status(400).json({ message: "Invalid Token" });
     }
-};
+}};

@@ -29,7 +29,6 @@ app.use(cors({
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(authMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -81,20 +80,9 @@ app.use((err, req, res, next) => {
     initGemini(); // Initialize Gemini AI
     console.log('✅ Gemini AI initialized');
 
-    // Routes
-    app.use('/user', userRouter);
-    app.use('/resume', resumeRoutes);
-    app.use("/jobs", jobRoutes);
 
 
-    // Error handling middleware
-    app.use((err, req, res, next) => {
-      console.error('Server error:', err);
-      res.status(500).json({ 
-        error: 'Internal server error',
-        message: err.message 
-      });
-    });
+    
 
     // Start server
     const PORT = process.env.PORT || 3000;
