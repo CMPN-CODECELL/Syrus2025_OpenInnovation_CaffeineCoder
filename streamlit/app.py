@@ -44,6 +44,7 @@ class StressDetectionSystem:
         self.stress_levels = deque(maxlen=300)
         self.metadata = []
         self._init_filesystem()
+        self.temp_file_path = os.path.join(os.getcwd(), "current_emotion.json")
         
     def _init_filesystem(self):
         """Initialize required directories and files"""
@@ -52,6 +53,18 @@ class StressDetectionSystem:
         if not os.path.exists(os.path.join(CONFIG['data_path'], CONFIG['metadata_file'])):
             pd.DataFrame(columns=['timestamp', 'emotion', 'stress_level', 'face_x', 'face_y']).to_csv(
                 os.path.join(CONFIG['data_path'], CONFIG['metadata_file']), index=False)
+    
+    def _save_temp_emotion_data(self, emotion, score):
+        """Save current dominant emotion and its score to a temporary file"""
+        temp_data = {
+            "dominant_emotion": emotion,
+            "emotion_score": score,
+            "timestamp": datetime.now().isoformat(),
+            "session_id": datetime.now().strftime('%Y%m%d%H%M%S')
+        }
+        
+        with open(self.temp_file_path, 'w') as f:
+            json.dump(temp_data, f, cls=NumpyEncoder)
 
     def _save_metadata(self, data):
         """Save metadata to CSV"""
@@ -83,6 +96,7 @@ class StressDetectionSystem:
                     try:
                         analysis = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
                         emotion = analysis[0]['dominant_emotion']
+                        emotion_score = analysis[0]['emotion'][emotion]  # Get the actual score for the dominant emotion
                         stress_level = CONFIG['stress_map'].get(emotion, 0)
                         self.stress_levels.append(stress_level)
                         
@@ -95,6 +109,9 @@ class StressDetectionSystem:
                         }
                         
                         self.metadata.append(current_metadata)
+                        
+                        # Save the current emotion data to temp file
+                        self._save_temp_emotion_data(emotion, emotion_score)
                         
                         if len(self.metadata) % 10 == 0:
                             self._save_metadata(current_metadata)
@@ -109,6 +126,18 @@ class StressDetectionSystem:
                         return frame, None, None, None, None
         
         return frame, None, None, None, None
+
+    def reset_temp_emotion_file(self):
+        """Reset the temporary emotion file to neutral state"""
+        default_data = {
+            "dominant_emotion": "neutral",
+            "emotion_score": 0,
+            "timestamp": datetime.now().isoformat(),
+            "session_id": datetime.now().strftime('%Y%m%d%H%M%S')
+        }
+        
+        with open(self.temp_file_path, 'w') as f:
+            json.dump(default_data, f, cls=NumpyEncoder)
 
     def generate_json_report(self):
         """Generate JSON report with basic statistics"""
@@ -163,6 +192,8 @@ def main():
     # Initialize session state variables
     if 'system' not in st.session_state:
         st.session_state.system = StressDetectionSystem()
+        # Initialize temp file on startup
+        st.session_state.system.reset_temp_emotion_file()
     
     if 'is_recording' not in st.session_state:
         st.session_state.is_recording = False
@@ -184,6 +215,9 @@ def main():
         
     if 'cap' not in st.session_state:
         st.session_state.cap = None
+        
+    if 'session_id' not in st.session_state:
+        st.session_state.session_id = datetime.now().strftime('%Y%m%d%H%M%S')
         
     # App title with emoji
     st.title("😌 Stress Detection System")
@@ -209,6 +243,10 @@ def main():
                             st.session_state.cap.release()
                             st.session_state.cap = None
                         st.session_state.is_recording = False
+                        
+                        # FIX: Remove the code that updates temp file with "session_ended"
+                        # This allows the last detected emotion to persist in the temp file
+                        
                         st.rerun()
                 else:
                     if st.button("Start Recording", key="start_btn", type="primary"):
@@ -223,6 +261,22 @@ def main():
                             st.session_state.is_recording = True
                             st.session_state.start_time = datetime.now()
                             st.session_state.frame_count = 0
+                            
+                            # Generate new session ID
+                            st.session_state.session_id = datetime.now().strftime('%Y%m%d%H%M%S')
+                            
+                            # Initialize temp file for new session
+                            if hasattr(st.session_state, 'system') and st.session_state.system is not None:
+                                new_session_data = {
+                                    "dominant_emotion": "neutral",
+                                    "emotion_score": 0,
+                                    "timestamp": datetime.now().isoformat(),
+                                    "session_id": st.session_state.session_id,
+                                    "status": "session_started"
+                                }
+                                
+                                with open(st.session_state.system.temp_file_path, 'w') as f:
+                                    json.dump(new_session_data, f, cls=NumpyEncoder)
                         else:
                             st.error("Could not access webcam. Please check your camera permissions.")
             
@@ -246,10 +300,12 @@ def main():
                     
                     # Reset system instance
                     st.session_state.system = StressDetectionSystem()
+                    st.session_state.system.reset_temp_emotion_file()  # Reset the temp file
                     st.session_state.current_stress = 0
                     st.session_state.current_emotion = "neutral"
                     st.session_state.is_recording = False
                     st.session_state.frame_count = 0
+                    st.session_state.session_id = datetime.now().strftime('%Y%m%d%H%M%S')
                     st.success("Data reset complete!")
                     st.rerun()
         
@@ -303,6 +359,9 @@ def main():
             
             # Display data points collected
             st.metric("Data Points", len(st.session_state.system.metadata))
+            
+            # Display current session ID
+            st.text(f"Session ID: {st.session_state.session_id}")
             
     with tab2:
         st.subheader("Stress Analytics")
@@ -397,6 +456,18 @@ def main():
             with st.expander("View Raw Data"):
                 st.dataframe(df.sort_values('timestamp', ascending=False), use_container_width=True)
                 
+            # Display temp file content
+            with st.expander("View Current Emotion Temp File"):
+                try:
+                    if os.path.exists(st.session_state.system.temp_file_path):
+                        with open(st.session_state.system.temp_file_path, 'r') as f:
+                            temp_data = json.load(f)
+                        st.json(temp_data)
+                    else:
+                        st.warning("Temp file has not been created yet.")
+                except Exception as e:
+                    st.error(f"Error reading temp file: {str(e)}")
+                
     with tab3:
         st.subheader("About Stress Detection System")
         
@@ -420,6 +491,15 @@ def main():
         ### Privacy Notice
         
         All data is processed locally on your device. No video or analysis data is sent to external servers.
+        
+        ### Temporary Emotion File
+        
+        The system creates a temporary file that stores the current dominant emotion and its score. This file is:
+        
+        - Located at: stress_data/current_emotion.json
+        - Updated in real-time during sessions
+        - Reset when the system data is reset
+        - Marked with session IDs to track different recording sessions
         """)
         
         # System requirements
@@ -438,6 +518,26 @@ def main():
             3. Watch real-time stress analysis
             4. Click "Generate Report" for detailed insights
             5. Use "Reset Data" to clear all collected data
+            6. Access the temporary emotion file at stress_data/current_emotion.json for integration with other applications
+            """)
+            
+        # Temp file format
+        with st.expander("Temp File Format"):
+            st.markdown("""
+            
+json
+            {
+                "dominant_emotion": "happy",
+                "emotion_score": 95.24,
+                "timestamp": "2025-03-29T14:30:45.123456",
+                "session_id": "20250329143045"
+            }
+
+            
+            - dominant_emotion: The primary detected emotion
+            - emotion_score: Confidence score (0-100) for the detected emotion
+            - timestamp: ISO format timestamp of the detection
+            - session_id: Unique ID for the current recording session
             """)
     
     # Video processing function - separate from the main UI rendering
