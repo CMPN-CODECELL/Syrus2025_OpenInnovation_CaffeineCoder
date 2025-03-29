@@ -10,7 +10,6 @@ import EmployerDashboard from './pages/employer/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import MentorDashboard from './pages/mentor/Dashboard';
 import SkillSwap from './pages/learner/SkillSwap';
-// import FindMentors from './pages/learner/FindMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 import VideoPage from './pages/learner/VideoPage';
 import Profile from './pages/auth/Profile';
