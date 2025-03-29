@@ -9,7 +9,7 @@ import skillSwapRouter from './route/skillswap.route.js';
 import mentorshipRouter from './route/mentorship.route.js';
 import employerDashboard from "./route/employer.route.js";
 import jobRoutes from "./route/job.route.js";
-import { authMiddleware } from './middleware/auth.middleware.js';
+
 
 // Load environment variables
 dotenv.config({ path: './.env' });

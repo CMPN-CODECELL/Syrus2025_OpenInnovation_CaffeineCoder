@@ -1,3 +1,4 @@
+// App.js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -9,10 +10,14 @@ import EmployerDashboard from './pages/employer/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import MentorDashboard from './pages/mentor/Dashboard';
 import SkillSwap from './pages/learner/SkillSwap';
-import FindMentors from './pages/learner/FIndMentors';
+// import FindMentors from './pages/learner/FindMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 import VideoPage from './pages/learner/VideoPage';
 import Profile from './pages/auth/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
+import Unauthorized from './pages/Unauthorized';
+import AuthRedirect from './components/AuthRedirect';
+import FindMentors from './pages/learner/FindMentors';
 
 function App() {
   return (
@@ -22,18 +27,45 @@ function App() {
           <Navbar />
           <main className="flex-grow container mx-auto px-4 py-8">
             <Routes>
+              {/* Public routes - redirect if logged in */}
               <Route path="/" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/learner/dashboard" element={<LearnerDashboard />} />
-              <Route path='/mentor/dashboard' element={<MentorDashboard />} />
-              <Route path="/employer/dashboard" element={<EmployerDashboard />} />
-              <Route path='/skill-swap' element={<SkillSwap />} />
-              <Route path='/find-mentor' element={<FindMentors />} />
-              <Route path="/resume-builder" element={<ResumeBuilder />} />
-              <Route path='/video-page' element={<VideoPage />} />
+              <Route path="/login" element={
+                <>
+                  <AuthRedirect />
+                  <Login />
+                </>
+              } />
+              <Route path="/register" element={
+                <>
+                  <AuthRedirect />
+                  <Register />
+                </>
+              } />
+              <Route path="/unauthorized" element={<Unauthorized />} />
 
+              {/* Protected routes */}
+              <Route element={<ProtectedRoute allowedRoles={['Learner', 'Mentor', 'Employer']} />}>
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+
+              {/* Learner-only routes */}
+              <Route element={<ProtectedRoute allowedRoles={['Learner']} />}>
+                <Route path="/learner/dashboard" element={<LearnerDashboard />} />
+                <Route path="/skill-swap" element={<SkillSwap />} />
+                <Route path="/find-mentor" element={<FindMentors />} />
+                <Route path="/resume-builder" element={<ResumeBuilder />} />
+                <Route path="/video-page" element={<VideoPage />} />
+              </Route>
+
+              {/* Mentor-only routes */}
+              <Route element={<ProtectedRoute allowedRoles={['Mentor']} />}>
+                <Route path="/mentor/dashboard" element={<MentorDashboard />} />
+              </Route>
+
+              {/* Employer-only routes */}
+              <Route element={<ProtectedRoute allowedRoles={['Employer']} />}>
+                <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+              </Route>
             </Routes>
           </main>
           <Footer />
