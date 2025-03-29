@@ -7,6 +7,9 @@ import { userRouter } from './route/user.route.js';
 import resumeRoutes from './route/resume.route.js';
 import skillSwapRouter from './route/skillswap.route.js';
 import mentorshipRouter from './route/mentorship.route.js';
+import employerDashboard from "./route/employer.route.js";
+import jobRoutes from "./route/job.route.js";
+import { authMiddleware } from './middleware/auth.middleware.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -38,6 +41,7 @@ app.use(cors({
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(authMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -55,6 +59,8 @@ app.use('/user', userRouter);
 app.use('/resume', resumeRoutes);
 app.use('/skillswap', skillSwapRouter);
 app.use('/mentorship', mentorshipRouter);
+app.use("/employer-dashboard", employerDashboard);
+app.use("/jobs", jobRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

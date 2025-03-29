@@ -1,53 +1,31 @@
 import mongoose from "mongoose";
-import { JOB_STATUS } from "../utils/enums";
+import { z } from "zod";
+
+// Zod schema for validation
+export const jobZodSchema = z.object({
+  title: z.string().min(3),
+  description: z.string().min(10),
+  requirements: z.array(z.string()),
+  location: z.string().optional(),
+  salary: z.number().optional(),
+  employmentType: z.enum(["full-time", "part-time", "contract", "internship"]),
+  postedBy: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val)),
+  status: z.enum(["open", "closed", "filled"]).default("open"),
+  applications: z.array(z.string()).optional(),
+  postedAt: z.date().default(() => new Date()),
+});
 
 const jobSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    location: {
-        type: String, 
-        required: true
-    },
-    jobType: {
-        type: String,
-        enum: ["Full-time", "Part-time", "Internship", "Contract", "Freelance"],
-        required: true
-    },
-    salaryRange: {
-        min: { type: Number },
-        max: { type: Number }
-    },
-    requiredSkills: {
-        type: [String],
-        required: true
-    },
-    company: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Company",
-        required: true
-    },
-    applicants: [{
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        status: { type: String, enum: ["Applied", "Interviewing", "Hired", "Rejected"], default: "Applied" },
-        appliedAt: { type: Date, default: Date.now }
-    }],
-    status: {
-        type: String,
-        enum: Object.values(JOB_STATUS),
-        default: JOB_STATUS.OPEN
-    },
-    deadline: {
-        type: Date,
-        required: true
-    }
-}, { timestamps: true });
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  requirements: [{ type: String }],
+  location: { type: String },
+  salary: { type: Number },
+  employmentType: { type: String, enum: ["full-time", "part-time", "contract", "internship"] },
+  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  status: { type: String, enum: ["open", "closed", "filled"], default: "open" },
+  applications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Application" }],
+  postedAt: { type: Date, default: Date.now },
+});
 
-const Job = mongoose.model("Job", jobSchema);
-
-export default Job;
+export const Job = mongoose.model("Job", jobSchema);

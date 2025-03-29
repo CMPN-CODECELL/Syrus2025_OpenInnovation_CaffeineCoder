@@ -32,14 +32,11 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      issuer: 'edutrade-api',
-      audience: 'edutrade-web'
-    });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Check if user still exists
-    const user = await User.findById(decoded.userId).select('+active');
-    if (!user || !user.active) {
+    const user = await User.findById(decoded.userId);
+    if (!user) {
       throw new AuthenticationError('User account no longer exists or is inactive');
     }
 
