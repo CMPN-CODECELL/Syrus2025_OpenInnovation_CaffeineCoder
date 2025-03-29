@@ -1,9 +1,15 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
-import { Link } from 'react-router-dom';
-import { Briefcase, Users, Search, CheckCircle, PlusCircle } from 'lucide-react';
+import { Link } from "react-router-dom";
+import {
+  Briefcase,
+  Users,
+  Search,
+  CheckCircle,
+  PlusCircle,
+} from "lucide-react";
 
 function EmployerDashboard() {
   const { user } = useAuth();
@@ -11,7 +17,7 @@ function EmployerDashboard() {
     activeListings: 0,
     totalApplicants: 0,
     positionsFilled: 0,
-    recentApplications: []
+    recentApplications: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,20 +25,25 @@ function EmployerDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employer-dashboard/dashboard', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+        const response = await axios.get(
+          "http://localhost:3000/employer-dashboard/dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
-        });
+        );
         setDashboardData({
           activeListings: response.data.activeListings,
           totalApplicants: response.data.totalApplicants,
           positionsFilled: response.data.positionsFilled,
-          recentApplications: response.data.recentApplications
+          recentApplications: response.data.recentApplications,
         });
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch dashboard data');
-        console.error('Error fetching dashboard data:', err);
+        setError(
+          err.response?.data?.message || "Failed to fetch dashboard data"
+        );
+        console.error("Error fetching dashboard data:", err);
       } finally {
         setLoading(false);
       }
@@ -42,7 +53,11 @@ function EmployerDashboard() {
   }, []);
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading dashboard...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        Loading dashboard...
+      </div>
+    );
   }
 
   if (error) {
@@ -51,7 +66,7 @@ function EmployerDashboard() {
 
   return (
     <div className="space-y-8">
-           <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Employer Dashboard</h1>
         <Link
           to="/post-job"
@@ -72,17 +87,23 @@ function EmployerDashboard() {
           <div className="bg-green-50 p-4 rounded-lg">
             <Users className="h-8 w-8 text-green-600 mb-2" />
             <h3 className="font-semibold">Total Applicants</h3>
-            <p className="text-2xl font-bold">{dashboardData.totalApplicants}</p>
+            <p className="text-2xl font-bold">
+              {dashboardData.totalApplicants}
+            </p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">
             <Search className="h-8 w-8 text-yellow-600 mb-2" />
             <h3 className="font-semibold">Talent Matches</h3>
-            <p className="text-2xl font-bold">4</p>
+            <p className="text-2xl font-bold">
+              {Math.round(dashboardData.totalApplicants * 0.3)}
+            </p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg">
             <CheckCircle className="h-8 w-8 text-purple-600 mb-2" />
             <h3 className="font-semibold">Positions Filled</h3>
-            <p className="text-2xl font-bold">{dashboardData.positionsFilled}</p>
+            <p className="text-2xl font-bold">
+              {dashboardData.positionsFilled}
+            </p>
           </div>
         </div>
       </div>
@@ -98,9 +119,12 @@ function EmployerDashboard() {
                   <p className="text-gray-600">{application.applicantName}</p>
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm text-gray-500">
-                      Applied {new Date(application.appliedAt).toLocaleDateString()}
+                      Applied{" "}
+                      {new Date(application.appliedAt).toLocaleDateString()}
                     </p>
-                    <button className="text-blue-600 hover:underline">Review</button>
+                    <button className="text-blue-600 hover:underline">
+                      Review
+                    </button>
                   </div>
                 </li>
               ))
@@ -117,17 +141,25 @@ function EmployerDashboard() {
               <div>
                 <p className="font-semibold">David Wilson</p>
                 <p className="text-sm text-gray-600">Frontend Developer</p>
-                <p className="text-sm text-gray-500">98% match for Senior Frontend role</p>
+                <p className="text-sm text-gray-500">
+                  98% match for Senior Frontend role
+                </p>
               </div>
-              <button className="text-blue-600 hover:underline">View Profile</button>
+              <button className="text-blue-600 hover:underline">
+                View Profile
+              </button>
             </li>
             <li className="flex items-center justify-between border-b pb-4">
               <div>
                 <p className="font-semibold">Rachel Thompson</p>
                 <p className="text-sm text-gray-600">Full Stack Developer</p>
-                <p className="text-sm text-gray-500">95% match for Full Stack role</p>
+                <p className="text-sm text-gray-500">
+                  95% match for Full Stack role
+                </p>
               </div>
-              <button className="text-blue-600 hover:underline">View Profile</button>
+              <button className="text-blue-600 hover:underline">
+                View Profile
+              </button>
             </li>
           </ul>
         </div>

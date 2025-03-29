@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+const dateStringSchema = z.string().refine(val => !isNaN(Date.parse(val)), {
+  message: "Invalid date format"
+});
+
 export const jobZodSchema = z.object({
   title: z.string()
     .min(3, "Title must be at least 3 characters long")
@@ -24,7 +28,16 @@ export const jobZodSchema = z.object({
   
   employmentType: z.enum(
     ["full-time", "part-time", "contract", "internship"], 
-    { message: "Invalid employment type" }
+    { 
+      errorMap: () => ({ 
+        message: "Must be one of: full-time, part-time, contract, internship" 
+      }) 
+    }
+  ),
+  
+  postedBy: z.string().refine(
+    val => /^[0-9a-fA-F]{24}$/.test(val),
+    { message: "Invalid user ID format" }
   ),
   
   skillsRequired: z.array(
@@ -42,21 +55,24 @@ export const jobZodSchema = z.object({
     z.string().min(2, "Each benefit must be at least 2 characters long")
   ).optional(),
   
-  deadline: z.date()
-    .min(new Date(), "Deadline must be in the future")
+  deadline: z.union([dateStringSchema, z.date()])
+    .transform(val => new Date(val))
+    .refine(val => val > new Date(), "Deadline must be in the future")
     .optional(),
   
-  status: z.enum(
-    ["open", "closed", "filled"],
-    { message: "Invalid job status" }
-  ).default("open")
+  status: z.enum(["open", "closed", "filled"])
+    .default("open")
 }).strict();
 
-// Schema for updating a job (makes all fields optional)
-export const jobUpdateZodSchema = jobZodSchema.partial().strict();
+export const jobUpdateZodSchema = jobZodSchema
+  .partial()
+  .strict()
+  .refine(data => Object.keys(data).length > 0, {
+    message: "At least one field must be provided for update"
+  });
 
-// Schema for job application filters
 export const jobFilterZodSchema = z.object({
+  title: z.string().optional(),
   employmentType: z.enum(
     ["full-time", "part-time", "contract", "internship"]
   ).optional(),
@@ -67,5 +83,6 @@ export const jobFilterZodSchema = z.object({
   minSalary: z.number().min(0).optional(),
   maxSalary: z.number().min(0).optional(),
   skills: z.array(z.string()).optional(),
-  status: z.enum(["open", "closed", "filled"]).optional()
+  status: z.enum(["open", "closed", "filled"]).optional(),
+  postedBy: z.string().optional()
 }).strict();

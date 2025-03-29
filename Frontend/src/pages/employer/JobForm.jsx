@@ -27,14 +27,17 @@ export default function JobForm({ onSubmit }) {
     setRequirements(newRequirements);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const filteredRequirements = requirements.filter(req => req.trim() !== '');
-    onSubmit({
-      ...formData,
-      requirements: filteredRequirements,
-    });
-  };
+  // Inside JobForm.jsx, update the handleSubmit function:
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const filteredRequirements = requirements.filter(req => req.trim() !== '');
+  
+  onSubmit({
+    ...formData,
+    requirements: filteredRequirements,
+    // Note: We're not sending skillsRequired here, it will be handled in PostJob
+  });
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
