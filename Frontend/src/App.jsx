@@ -44,19 +44,19 @@ function App() {
               } />
               <Route path="/unauthorized" element={<Unauthorized />} />
 
-              {/* Protected routes */}
-              <Route element={<ProtectedRoute allowedRoles={['Learner', 'Mentor', 'Employer']} />}>
-                <Route path="/profile" element={<Profile />} />
-              </Route>
+              {/* Learner, Mentor, Employer dashboard */}
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/learner/dashboard" element={<LearnerDashboard />} />
+              <Route path="/mentor/dashboard" element={<MentorDashboard />} />
+              <Route path="/employer/dashboard" element={<EmployerDashboard />} />
 
               {/* Learner-only routes */}
               <Route element={<ProtectedRoute allowedRoles={['Learner']} />}>
-                <Route path="/learner/dashboard" element={<LearnerDashboard />} />
                 <Route path="/skill-swap" element={<SkillSwap />} />
                 <Route path="/find-mentor" element={<FindMentors />} />
                 <Route path="/resume-builder" element={<ResumeBuilder />} />
                 <Route path="/video-page" element={<VideoPage />} />
-                <Route path='/skill-swap' element ={<SkillSwapForm />} />
+                <Route path='/skill-swap-form' element={<SkillSwapForm />} />
               </Route>
 
               {/* Mentor-only routes */}
@@ -67,9 +67,9 @@ function App() {
               {/* Employer-only routes */}
               <Route element={<ProtectedRoute allowedRoles={['Employer']} />}>
                 <Route path="/employer/dashboard" element={<EmployerDashboard />} />
-                <Route path='/post-job' element ={<PostJob/>} />
+                <Route path='/post-job' element={<PostJob />} />
               </Route>
-              
+
             </Routes>
           </main>
           <Footer />
