@@ -16,18 +16,6 @@ dotenv.config({ path: './.env' });
 
 
 
-// Validate required environment variables
-const requiredEnvVars = ['GEMINI_API_KEY', 'MONGO_URI'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-
-if (missingVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingVars);
-  process.exit(1);
-}
-
-console.log('✅ Environment variables loaded');
-
-// Initialize Express
 const app = express();
 
 
@@ -43,6 +31,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(authMiddleware);
 
+<<<<<<< HEAD
+=======
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -85,6 +75,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server after initializing services
+>>>>>>> main
 (async () => {
   try {
     await connectDB(); // Connect to MongoDB
@@ -93,6 +84,22 @@ app.use((err, req, res, next) => {
     initGemini(); // Initialize Gemini AI
     console.log('✅ Gemini AI initialized');
 
+    // Routes
+    app.use('/user', userRouter);
+    app.use('/resume', resumeRoutes);
+    app.use("/jobs", jobRoutes);
+
+
+    // Error handling middleware
+    app.use((err, req, res, next) => {
+      console.error('Server error:', err);
+      res.status(500).json({ 
+        error: 'Internal server error',
+        message: err.message 
+      });
+    });
+
+    // Start server
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);

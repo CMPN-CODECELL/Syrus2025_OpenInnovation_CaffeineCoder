@@ -105,21 +105,6 @@ export const restrictTo = (...roles) => {
 
       next();
     } catch (error) {
-      if (error instanceof AuthorizationError) {
-        return res.status(403).json({
-          success: false,
-          error: {
-            message: error.message,
-            code: 'FORBIDDEN'
-          }
-        });
-      }
-
-      // Forward other errors to error handler
-      next(error);
+        res.status(400).json({ message: "Invalid Token" });
     }
-  };
 };
-
-// Optional: Admin-only middleware
-export const adminOnly = restrictTo('Admin');

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Job } from "../models/jobs.model.js";
 import { Application } from "../models/application.model.js";
 import { jobZodSchema } from "../zod-schemas/job.schema.js";
@@ -64,3 +65,25 @@ export const updateApplicationStatus = async (req, res) => {
     res.status(500).json({ message: "Error updating application", error: error.message });
   }
 };
+=======
+import Job from "../models/jobs.model.js";
+
+export const createJob = async (req, res) => {
+    try {
+        const job = new Job(req.body);
+        await job.save();
+        res.status(201).json(job);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+export const getJobs = async (req, res) => {
+    try {
+        const jobs = await Job.find().populate('company');
+        res.json(jobs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+>>>>>>> 40bf442a423ee9d8efc337c0087c449288179ab9

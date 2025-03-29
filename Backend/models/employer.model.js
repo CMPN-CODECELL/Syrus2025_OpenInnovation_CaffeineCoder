@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const companySchema = new mongoose.Schema({
+const employerSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -18,18 +18,9 @@ const companySchema = new mongoose.Schema({
         type: String, 
         default: "default_logo.png"
     },
-    website: {
-        type: String
-    },
     industry: {
         type: String,
         required: true
-    },
-    location: {
-        type: String
-    },
-    description: {
-        type: String
     },
     jobs: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -38,7 +29,14 @@ const companySchema = new mongoose.Schema({
     applicants: [{
         jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        status: { type: String, enum: ["Applied", "Interviewing", "Hired", "Rejected"], default: "Applied" }
+        status: { type: String, enum: ["Applied", "Interviewing", "Hired", "Rejected"], default: "Applied" },
+        applicationDate: { type: Date, default: Date.now }
+    }],
+    talentMatches: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
+        matchPercentage: { type: Number },
+        matchDate: { type: Date, default: Date.now }
     }],
     verified: {
         type: Boolean,
@@ -46,6 +44,6 @@ const companySchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Company = mongoose.model('Company', companySchema);
+const Employer = mongoose.model('Employer', employerSchema);
 
-export default Company;
+export default Employer;
