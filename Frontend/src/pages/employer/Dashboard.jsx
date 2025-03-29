@@ -1,34 +1,41 @@
-import { useAuth } from '../../context/AuthContext';
-import { Briefcase, Users, Search, CheckCircle } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Briefcase, Users, Search, CheckCircle, PlusCircle } from 'lucide-react';
 
 function EmployerDashboard() {
-  const { user } = useAuth();
-
   return (
-    <div className="space-y-8">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Welcome back, {user?.email}</h1>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <Briefcase className="h-8 w-8 text-blue-600 mb-2" />
-            <h3 className="font-semibold">Active Listings</h3>
-            <p className="text-2xl font-bold">8</p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <Users className="h-8 w-8 text-green-600 mb-2" />
-            <h3 className="font-semibold">Total Applicants</h3>
-            <p className="text-2xl font-bold">45</p>
-          </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <Search className="h-8 w-8 text-yellow-600 mb-2" />
-            <h3 className="font-semibold">Talent Matches</h3>
-            <p className="text-2xl font-bold">15</p>
-          </div>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <CheckCircle className="h-8 w-8 text-purple-600 mb-2" />
-            <h3 className="font-semibold">Positions Filled</h3>
-            <p className="text-2xl font-bold">3</p>
-          </div>
+    <div className="space-y-8 p-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Employer Dashboard</h1>
+        <Link
+          to="/post-job"
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          <PlusCircle className="h-5 w-5" />
+          Post New Job
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <Briefcase className="h-8 w-8 text-blue-600 mb-2" />
+          <h3 className="font-semibold">Active Listings</h3>
+          <p className="text-2xl font-bold">8</p>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg">
+          <Users className="h-8 w-8 text-green-600 mb-2" />
+          <h3 className="font-semibold">Total Applicants</h3>
+          <p className="text-2xl font-bold">45</p>
+        </div>
+        <div className="bg-yellow-50 p-4 rounded-lg">
+          <Search className="h-8 w-8 text-yellow-600 mb-2" />
+          <h3 className="font-semibold">Talent Matches</h3>
+          <p className="text-2xl font-bold">15</p>
+        </div>
+        <div className="bg-purple-50 p-4 rounded-lg">
+          <CheckCircle className="h-8 w-8 text-purple-600 mb-2" />
+          <h3 className="font-semibold">Positions Filled</h3>
+          <p className="text-2xl font-bold">3</p>
         </div>
       </div>
 

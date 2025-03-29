@@ -13,6 +13,7 @@ import FindMentors from './pages/learner/FIndMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 import VideoPage from './pages/learner/VideoPage';
 import Profile from './pages/auth/Profile';
+import PostJob from './pages/employer/PostJob';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path='/find-mentor' element={<FindMentors />} />
               <Route path="/resume-builder" element={<ResumeBuilder />} />
               <Route path='/video-page' element={<VideoPage />} />
+              <Route path="/post-job" element={<PostJob />} />
 
             </Routes>
           </main>
