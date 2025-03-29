@@ -5,6 +5,18 @@ function VideoPage() {
   const [activeTab, setActiveTab] = useState('learn');
   const [showCourse, setShowCourse] = useState(false);
   const [showPointsModal, setShowPointsModal] = useState(false);
+  const [showSkillSwapForm, setShowSkillSwapForm] = useState(false);
+const [skillSwapRequests, setSkillSwapRequests] = useState([]);
+const handleSkillSwapSubmit = (formData) => {
+  setSkillSwapRequests(prev => [
+    ...prev,
+    {
+      id: Date.now(),
+      ...formData,
+      timestamp: new Date().toLocaleString()
+    }
+  ]);
+};
   
   const courseData = {
     title: "React & TypeScript Masterclass",
@@ -481,7 +493,13 @@ function VideoPage() {
           <h1 className="text-4xl font-bold mb-2 text-gray-800">Skill Swap</h1>
           <p className="text-gray-600 text-lg">Learn, teach, and earn points for certificates</p>
         </div>
-
+        <button 
+  onClick={() => setShowSkillSwapForm(true)}
+  className="mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 mx-auto"
+>
+  <BookOpen className="h-5 w-5" />
+  Create Skill Swap Request
+</button>
         {/* Points Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           {[
@@ -658,6 +676,59 @@ function VideoPage() {
             )}
           </div>
         </div>
+        <div className="mt-8 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+  <div className="p-6">
+    <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Skill Swap Requests</h2>
+    
+    {skillSwapRequests.length === 0 ? (
+      <div className="text-center py-8 text-gray-500">
+        No skill swap requests yet. Be the first to create one!
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {skillSwapRequests.map(request => (
+          <div key={request.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all">
+            <div className="flex items-start space-x-4">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <User className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-800">{request.name}</h3>
+                <p className="text-sm text-gray-500 mb-3">{request.timestamp}</p>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Book className="h-4 w-4 text-green-600 mr-2" />
+                    <span className="text-gray-700">
+                      <span className="font-medium">Teaching:</span> {request.skillTeaching}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <BookOpen className="h-4 w-4 text-blue-600 mr-2" />
+                    <span className="text-gray-700">
+                      <span className="font-medium">Learning:</span> {request.skillLearning}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                      {request.experienceLevel}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+{showSkillSwapForm && (
+  <SkillSwapForm 
+    onClose={() => setShowSkillSwapForm(false)}
+    onSubmit={handleSkillSwapSubmit}
+  />
+)}
       </div>
       {showPointsModal && <PointsModal />}
     </div>

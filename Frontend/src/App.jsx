@@ -18,6 +18,7 @@ import Unauthorized from './pages/Unauthorized';
 import AuthRedirect from './components/AuthRedirect';
 import FindMentors from './pages/learner/FindMentors';
 import PostJob from './pages/employer/PostJob';
+import SkillSwapForm from './pages/learner/SkillSwapForm';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
                 <Route path="/find-mentor" element={<FindMentors />} />
                 <Route path="/resume-builder" element={<ResumeBuilder />} />
                 <Route path="/video-page" element={<VideoPage />} />
+                <Route path='/skill-swap' element ={<SkillSwapForm />} />
               </Route>
 
               {/* Mentor-only routes */}
