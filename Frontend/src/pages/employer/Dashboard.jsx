@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-import { Briefcase, Users, Search, CheckCircle } from 'lucide-react';
+
+import { Link } from 'react-router-dom';
+import { Briefcase, Users, Search, CheckCircle, PlusCircle } from 'lucide-react';
 
 function EmployerDashboard() {
   const { user } = useAuth();
@@ -49,6 +51,16 @@ function EmployerDashboard() {
 
   return (
     <div className="space-y-8">
+           <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Employer Dashboard</h1>
+        <Link
+          to="/post-job"
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          <PlusCircle className="h-5 w-5" />
+          Post New Job
+        </Link>
+      </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Welcome back, {user?.email}</h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
