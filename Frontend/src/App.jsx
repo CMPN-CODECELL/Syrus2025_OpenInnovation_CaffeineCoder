@@ -12,6 +12,7 @@ import SkillSwap from './pages/learner/SkillSwap';
 import FindMentors from './pages/learner/FIndMentors';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 import VideoPage from './pages/learner/VideoPage';
+import Profile from './pages/auth/Profile';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <main className="flex-grow container mx-auto px-4 py-8">
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/learner/dashboard" element={<LearnerDashboard />} />

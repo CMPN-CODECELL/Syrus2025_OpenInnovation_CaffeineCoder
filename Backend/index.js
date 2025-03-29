@@ -31,8 +31,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(authMiddleware);
 
-<<<<<<< HEAD
-=======
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -75,7 +73,6 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server after initializing services
->>>>>>> main
 (async () => {
   try {
     await connectDB(); // Connect to MongoDB

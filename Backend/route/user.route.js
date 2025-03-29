@@ -129,9 +129,16 @@ userRouter.post('/login', async (req, res) => {
   }
 });
 
-// Get user profile
-userRouter.get('/profile/:id', async (req, res) => {
+import { authMiddleware } from '../middleware/auth.middleware.js';
+
+// Protected profile routes
+userRouter.get('/profile/:id', authMiddleware, async (req, res) => {
   try {
+    // Ensure users can only access their own profile
+    if (req.params.id !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+
     const user = await User.findById(req.params.id).select('-password');
     
     if (!user) {
@@ -144,20 +151,31 @@ userRouter.get('/profile/:id', async (req, res) => {
   }
 });
 
-// Update user profile
-userRouter.put('/profile/:id', async (req, res) => {
+userRouter.put('/profile/:id', authMiddleware, async (req, res) => {
   try {
+    // Ensure users can only update their own profile
+    if (req.params.id !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+
     const parseResult = UserUpdateSchema.safeParse(req.body);
     
     if (!parseResult.success) {
-      return res.status(400).json({ message: parseResult.error.errors });
+      return res.status(400).json({ 
+        message: "Validation failed",
+        errors: parseResult.error.errors 
+      });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       parseResult.data,
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.status(200).json(updatedUser);
   } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, BookOpen, Users, Clock, Award, Play, CheckCircle, ArrowLeft, X, CheckSquare, Download, Gift, AlignCenterVertical as Certificate } from 'lucide-react';
+import { Search, BookOpen, Users, Clock, Award, Play, CheckCircle, ArrowLeft, X, CheckSquare, Download, Gift, AlignCenterVertical as Certificate, MessageSquare, ThumbsUp, ThumbsDown, Send, Star } from 'lucide-react';
 
 function VideoPage() {
   const [activeTab, setActiveTab] = useState('learn');
@@ -51,6 +51,255 @@ function VideoPage() {
 
   const [activeVideo, setActiveVideo] = useState(courseData.lectures[0]);
   const [userPoints, setUserPoints] = useState(150);
+
+  // VideoFeedback Component with Average Review
+  const VideoFeedback = ({ videoId, courseTitle }) => {
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+    const [showComments, setShowComments] = useState(false);
+    const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
+    
+    // Mock comments data
+    const [comments, setComments] = useState([
+      {
+        id: 1,
+        user: "Sarah Johnson",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+        comment: "This lecture really helped me understand React hooks. Great explanation!",
+        rating: 5,
+        timestamp: "2 days ago",
+        likes: 12,
+        dislikes: 0
+      },
+      {
+        id: 2,
+        user: "Michael Chen",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+        comment: "Good overview but I wish there were more practical examples.",
+        rating: 4,
+        timestamp: "1 week ago",
+        likes: 5,
+        dislikes: 1
+      }
+    ]);
+
+    // Calculate average rating
+    const calculateAverageRating = () => {
+      if (comments.length === 0) return 0;
+      const sum = comments.reduce((total, comment) => total + comment.rating, 0);
+      return (sum / comments.length).toFixed(1);
+    };
+    
+    const averageRating = calculateAverageRating();
+    const totalReviews = comments.length;
+
+    // Update isSubmitButtonDisabled based on rating and comment
+    React.useEffect(() => {
+      setIsSubmitButtonDisabled(rating === 0 || comment.trim() === '');
+    }, [rating, comment]);
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (rating === 0 || comment.trim() === '') return;
+      
+      // Add new comment
+      const newComment = {
+        id: comments.length + 1,
+        user: "You",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=You",
+        comment: comment,
+        rating: rating,
+        timestamp: "Just now",
+        likes: 0,
+        dislikes: 0
+      };
+      
+      setComments([newComment, ...comments]);
+      setComment('');
+      setRating(0);
+      setSubmitted(true);
+      // Automatically show comments after submitting
+      setShowComments(true);
+      setTimeout(() => setSubmitted(false), 3000);
+    };
+
+    const handleLike = (commentId) => {
+      setComments(comments.map(c => 
+        c.id === commentId ? {...c, likes: c.likes + 1} : c
+      ));
+    };
+
+    const handleDislike = (commentId) => {
+      setComments(comments.map(c => 
+        c.id === commentId ? {...c, dislikes: c.dislikes + 1} : c
+      ));
+    };
+
+    return (
+      <div className="bg-white rounded-xl border border-gray-100 shadow-lg p-6 mt-6">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-gray-800">Video Feedback</h3>
+          
+          {/* Average Rating Component */}
+          <div className="bg-blue-50 rounded-lg p-3 flex items-center">
+            <div className="mr-3">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star 
+                    key={star} 
+                    className={`h-5 w-5 ${
+                      star <= Math.round(averageRating) 
+                        ? 'text-yellow-400 fill-current' 
+                        : 'text-gray-300'
+                    }`} 
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="flex items-baseline">
+                <span className="text-xl font-bold text-blue-600 mr-1">{averageRating}</span>
+                <span className="text-sm text-gray-600">/ 5</span>
+              </div>
+              <p className="text-xs text-gray-500">{totalReviews} {totalReviews === 1 ? 'review' : 'reviews'}</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Rating and comment form */}
+        <form onSubmit={handleSubmit} className="mb-8">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Rate this lecture
+            </label>
+            <div className="flex space-x-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className={`transition-all ${
+                    rating >= star ? 'text-yellow-400' : 'text-gray-300'
+                  }`}
+                >
+                  <Star className="h-8 w-8 fill-current" />
+                </button>
+              ))}
+            </div>
+            {rating === 0 && (
+              <p className="text-xs text-red-500 mt-1">Please select a rating</p>
+            )}
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Share your thoughts
+            </label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className={`w-full px-4 py-3 border ${comment.trim() === '' ? 'border-red-200' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              placeholder="What did you think about this lecture?"
+              rows={3}
+            ></textarea>
+            {comment.trim() === '' && (
+              <p className="text-xs text-red-500 mt-1">Please enter your feedback</p>
+            )}
+          </div>
+          
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isSubmitButtonDisabled}
+              className={`flex items-center px-6 py-3 rounded-lg transition-all ${
+                isSubmitButtonDisabled
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              <Send className="h-5 w-5 mr-2" />
+              Submit Feedback
+            </button>
+          </div>
+          
+          {submitted && (
+            <div className="mt-4 p-3 bg-green-50 text-green-800 rounded-lg flex items-center">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Thank you for your feedback!
+            </div>
+          )}
+        </form>
+        
+        {/* Comments section */}
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <button
+              onClick={() => setShowComments(!showComments)}
+              className="flex items-center text-gray-700 hover:text-blue-600 transition-all"
+            >
+              <MessageSquare className="h-5 w-5 mr-2" />
+              <span className="font-medium">
+                {showComments ? 'Hide Comments' : `Show Comments (${comments.length})`}
+              </span>
+            </button>
+          </div>
+          
+          {showComments && (
+            <div className="space-y-4">
+              {comments.map((item) => (
+                <div key={item.id} className="border border-gray-100 rounded-lg p-4 hover:border-gray-200 transition-all">
+                  <div className="flex items-start">
+                    <img
+                      src={item.avatar}
+                      alt={item.user}
+                      className="w-10 h-10 rounded-full mr-3"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium text-gray-800">{item.user}</h4>
+                        <span className="text-sm text-gray-500">{item.timestamp}</span>
+                      </div>
+                      
+                      <div className="flex items-center mb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < item.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      
+                      <p className="text-gray-700 mb-3">{item.comment}</p>
+                      
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={() => handleLike(item.id)}
+                          className="flex items-center text-gray-500 hover:text-blue-600 transition-all"
+                        >
+                          <ThumbsUp className="h-4 w-4 mr-1" />
+                          <span>{item.likes}</span>
+                        </button>
+                        <button
+                          onClick={() => handleDislike(item.id)}
+                          className="flex items-center text-gray-500 hover:text-red-600 transition-all"
+                        >
+                          <ThumbsDown className="h-4 w-4 mr-1" />
+                          <span>{item.dislikes}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const handleRedeemCertificate = (certificate) => {
     if (userPoints >= certificate.points) {
@@ -165,6 +414,12 @@ function VideoPage() {
                     <p className="text-gray-600">Instructor: {courseData.instructor}</p>
                   </div>
                 </div>
+                
+                {/* Video Feedback Component */}
+                <VideoFeedback 
+                  videoId={activeVideo.id} 
+                  courseTitle={courseData.title} 
+                />
               </div>
       
               {/* Course Content Section */}
