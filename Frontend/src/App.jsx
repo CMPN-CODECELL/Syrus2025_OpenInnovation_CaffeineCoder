@@ -13,11 +13,14 @@ import SkillSwap from './pages/learner/SkillSwap';
 import ResumeBuilder from './pages/learner/ResumeBuilder';
 import VideoPage from './pages/learner/VideoPage';
 import Profile from './pages/auth/Profile';
+<<<<<<< HEAD
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
 import AuthRedirect from './components/AuthRedirect';
 import FindMentors from './pages/learner/FindMentors';
 import PostJob from './pages/employer/PostJob';
+=======
+>>>>>>> Mentor
 
 function App() {
   return (
@@ -29,6 +32,7 @@ function App() {
             <Routes>
               {/* Public routes - redirect if logged in */}
               <Route path="/" element={<Dashboard />} />
+<<<<<<< HEAD
               <Route path="/login" element={
                 <>
                   <AuthRedirect />
@@ -42,6 +46,18 @@ function App() {
                 </>
               } />
               <Route path="/unauthorized" element={<Unauthorized />} />
+=======
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/learner/dashboard" element={<LearnerDashboard />} />
+              <Route path='/mentor/dashboard' element={<MentorDashboard />} />
+              <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+              <Route path='/skill-swap' element={<SkillSwap />} />
+              <Route path='/find-mentor' element={<FindMentors />} />
+              <Route path="/resume-builder" element={<ResumeBuilder />} />
+              <Route path='/video-page' element={<VideoPage />} />
+>>>>>>> Mentor
 
               {/* Protected routes */}
               <Route element={<ProtectedRoute allowedRoles={['Learner', 'Mentor', 'Employer']} />}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { BadgeCheck, Edit2, Save, XCircle } from "lucide-react";
+import StreakDashboard from "../../components/StreakDashboard";
 
 function Profile() {
   const { user, updateUser, token } = useAuth();
@@ -430,6 +431,7 @@ function Profile() {
           </div>
         </form>
       </div>
+      <StreakDashboard />
     </div>
   );
 }
