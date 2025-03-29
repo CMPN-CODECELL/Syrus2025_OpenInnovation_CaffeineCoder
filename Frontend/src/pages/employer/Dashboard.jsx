@@ -1,8 +1,51 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { Briefcase, Users, Search, CheckCircle } from 'lucide-react';
 
 function EmployerDashboard() {
   const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState({
+    activeListings: 0,
+    totalApplicants: 0,
+    positionsFilled: 0,
+    recentApplications: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/employer-dashboard/dashboard', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setDashboardData({
+          activeListings: response.data.activeListings,
+          totalApplicants: response.data.totalApplicants,
+          positionsFilled: response.data.positionsFilled,
+          recentApplications: response.data.recentApplications
+        });
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch dashboard data');
+        console.error('Error fetching dashboard data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-64">Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 p-4">Error: {error}</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -12,12 +55,12 @@ function EmployerDashboard() {
           <div className="bg-blue-50 p-4 rounded-lg">
             <Briefcase className="h-8 w-8 text-blue-600 mb-2" />
             <h3 className="font-semibold">Active Listings</h3>
-            <p className="text-2xl font-bold">8</p>
+            <p className="text-2xl font-bold">{dashboardData.activeListings}</p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
             <Users className="h-8 w-8 text-green-600 mb-2" />
             <h3 className="font-semibold">Total Applicants</h3>
-            <p className="text-2xl font-bold">45</p>
+            <p className="text-2xl font-bold">{dashboardData.totalApplicants}</p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">
             <Search className="h-8 w-8 text-yellow-600 mb-2" />
@@ -27,7 +70,7 @@ function EmployerDashboard() {
           <div className="bg-purple-50 p-4 rounded-lg">
             <CheckCircle className="h-8 w-8 text-purple-600 mb-2" />
             <h3 className="font-semibold">Positions Filled</h3>
-            <p className="text-2xl font-bold">3</p>
+            <p className="text-2xl font-bold">{dashboardData.positionsFilled}</p>
           </div>
         </div>
       </div>
@@ -36,22 +79,22 @@ function EmployerDashboard() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Recent Applications</h2>
           <ul className="space-y-4">
-            <li className="border-b pb-4">
-              <p className="font-semibold">Senior Frontend Developer</p>
-              <p className="text-gray-600">4 new applications</p>
-              <div className="flex justify-between items-center mt-2">
-                <p className="text-sm text-gray-500">Posted 2 days ago</p>
-                <button className="text-blue-600 hover:underline">Review</button>
-              </div>
-            </li>
-            <li className="border-b pb-4">
-              <p className="font-semibold">Full Stack Engineer</p>
-              <p className="text-gray-600">2 new applications</p>
-              <div className="flex justify-between items-center mt-2">
-                <p className="text-sm text-gray-500">Posted 5 days ago</p>
-                <button className="text-blue-600 hover:underline">Review</button>
-              </div>
-            </li>
+            {dashboardData.recentApplications.length > 0 ? (
+              dashboardData.recentApplications.map((application, index) => (
+                <li key={index} className="border-b pb-4">
+                  <p className="font-semibold">{application.jobTitle}</p>
+                  <p className="text-gray-600">{application.applicantName}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-sm text-gray-500">
+                      Applied {new Date(application.appliedAt).toLocaleDateString()}
+                    </p>
+                    <button className="text-blue-600 hover:underline">Review</button>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <p className="text-gray-500">No recent applications</p>
+            )}
           </ul>
         </div>
 
